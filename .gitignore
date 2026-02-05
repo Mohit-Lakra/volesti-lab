@@ -1,0 +1,27 @@
+# Build artifacts
+build/
+*.o
+*.so
+*.dylib
+*.a
+
+# R artifacts
+*.Rhistory
+.RData
+.Rproj.user
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Test outputs
+*.log
+test-results/
+
+# Temporary files
+tmp/
+temp/
