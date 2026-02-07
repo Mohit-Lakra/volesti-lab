@@ -1,52 +1,28 @@
-# volesti LP Solver Replacement
+# volesti-lab
 
-**Author:** Mohit Lakra (@Mohit-Lakra)  
-**Project:** Replace/Exclude lp_solve in volesti
-**Organization:** GeomScale  
-**Program:** Google Summer of Code 2026
+Prep repo for the GeomScale GSoC 2026 idea “Exclude lp_solve from volesti”. Everything here is work-in-progress notes, logs, and tests that show I can build the stack and understand where the pain points are.
 
-## 🎯 Project Goal
+## Current Focus
+- ✅ Day 1 (Easy Test groundwork): built C++ + R interfaces, captured max-ball outputs.
+- 🔄 Day 2+: start solver research for the Medium Test.
 
-Replace the lp_solve dependency in volesti with modern, stable, and maintainable LP solvers to improve numerical stability, build system integration, and long-term maintainability.
+## Day 1 Snapshot
+- **C++ side:** `cmake .. && make -j4` inside `volesti/test`; kept 24 targets by commenting out the four CRHMC executables that choke on Clang 20. `./test_internal_points` now runs end-to-end (5/6 doctests pass, sparse order polytope fails only because tolerance is 1e-6 vs the achieved 1.0e-4).
+- **R side:** `Rscript -e 'Rcpp::compileAttributes()'` followed by `R_MAKEVARS_USER=/dev/null R CMD INSTALL --preclean --no-multiarch --with-keep.source .`. This needed two local patches so the bundled `qd` code stops injecting `-march=native`/`<immintrin.h>` when the compiler is targeting arm64.
+- **Verification:** Stored the doctest log, an `inner_ball()` script, and console output for cube/simplex/cross polytopes under `tests/easy/` so mentors can replay the Easy Test quickly.
 
-## 📊 Progress Tracker
+## Key Fixes
+1. `src/external/PackedCSparse/qd/Makefile` – drop `-march=native`, compile `.cc` sources with `$(CXX)` to inherit the right standard/arch from R.
+2. `src/external/PackedCSparse/FloatArray.h` – guard `<immintrin.h>` behind `#if defined(__AVX2__)` so ARM builds no longer drag in x86-only headers.
+3. Force-clean both embedded libraries plus `R CMD INSTALL --preclean` after switching architectures; otherwise stale x86 objects poison the final shared object.
 
-- **Day 1:** ⏳ In Progress
-- **Day 2:** 🔲 Not Started
-- **Day 3:** 🔲 Not Started
-- **Day 4:** 🔲 Not Started
-- **Day 5:** 🔲 Not Started
-- **Day 6:** 🔲 Not Started
-- **Day 7:** 🔲 Not Started
-- **Day 8:** 🔲 Not Started
-- **Day 9:** 🔲 Not Started
-- **Day 10:** 🔲 Not Started
-- **Day 11:** 🔲 Not Started
-- **Day 12:** 🔲 Not Started
-- **Day 13:** 🔲 Not Started
-- **Day 14:** 🔲 Not Started
-- **Day 15:** 🔲 Not Started
-- **Day 16:** 🔲 Not Started
-- **Day 17:** 🔲 Not Started
-- **Day 18:** 🔲 Not Started
-- **Day 19:** 🔲 Not Started
-- **Day 20:** 🔲 Not Started
+## Logs & Proof
+- `logs/day1-build.md` – raw build diary (C++ focus).
+- `logs/day1-summary.md` – condensed checklist + commands.
+- `tests/easy/easy-test.md` – Easy Test recipe with links to [`cpp_output.txt`](tests/easy/cpp_output.txt) and [`r_output.txt`](tests/easy/r_output.txt).
 
-## 🔗 Related Links
+## Next Steps
+- Medium Test: catalog LP/ball solvers (CRAN + modern C++), sketch replacement plan.
+- Hard Test: prototype a replacement (likely nloptr + Eigen glue) once the research doc is ready.
 
-- **Main volesti repo:** https://github.com/GeomScale/volesti
-- **GSoC Project Page:** https://github.com/GeomScale/gsoc26/wiki/Exclude-Lpsolve
-- **My PRs:**
-  - #375 (merged)
-  - #439 (open)
-  - #441 (open)
-
-## 📈 Metrics (Updated Daily)
-
-- **Lines of Code:** 0
-- **Tests Written:** 0
-- **Documents Created:** 0
-- **Benchmarks Run:** 0
-
-
-Last Updated: February 5, 2026
+*Last updated: 7 Feb 2026*

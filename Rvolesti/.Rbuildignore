@@ -1,0 +1,6 @@
+.github
+.git
+.gitmodules
+.gitingore
+LICENSE
+inst/checks

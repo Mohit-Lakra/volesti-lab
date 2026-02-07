@@ -1,0 +1,25 @@
+[doctest] doctest version is "2.4.9"
+[doctest] run with "--help" for options
+
+--- Testing Chebychev ball for skinny H-polytope
+
+--- Testing feasibility point for skinny H-polytope
+
+--- Testing analytic center for skinny H-polytope
+
+--- Testing volumetric center for skinny H-polytope
+
+--- Testing vaidya center for skinny H-polytope
+
+--- Testing Chebychev ball for sparse order Polytope
+===============================================================================
+/Users/mohitlakra/github/volesti-lab/volesti/test/test_internal_points.cpp:243:
+TEST CASE:  test_max_ball_sparse
+
+/Users/mohitlakra/github/volesti-lab/volesti/test/test_internal_points.cpp:87: ERROR: CHECK( (center - center_).norm() <= 1e-06 ) is NOT correct!
+  values: CHECK( 0.000104299 <= 1e-06 )
+
+===============================================================================
+[doctest] test cases:  6 |  5 passed | 1 failed | 0 skipped
+[doctest] assertions: 42 | 41 passed | 1 failed |
+[doctest] Status: FAILURE!
