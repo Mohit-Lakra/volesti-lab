@@ -31,3 +31,36 @@ install.packages("highs")
 ```
 
 ---
+
+## C++ libraries
+
+### 1) HiGHS (primary pick)
+
+Repo: https://github.com/ERGO-Code/HiGHS
+
+Why it looks like the best first integration target:
+
+- License: **MIT**
+- Active development (frequent commits / recent activity)
+- Good performance reputation (especially on large sparse LPs)
+- Supports presolve/scaling options and has a modern API
+
+**Note:** I did read a few comments that “defaults” may not be ideal on numerically tricky instances. My takeaway is: enable presolve/scaling and be ready to tweak solver options (and add fallback behavior in volesti).
+
+---
+
+### 2) COIN-OR Clp (backup / reliability option)
+
+Repo: https://github.com/coin-or/Clp
+
+Why I kept this as a strong backup:
+
+- License: **EPL** (permissive enough for most projects)
+- Very mature / widely used in COIN-OR ecosystem
+- Often described as “boring but dependable”
+- Commonly used underneath other tools (CBC etc.)
+
+Tradeoff: seems **slower than HiGHS** on a lot of modern benchmarks, but looks more “plug and play”.
+
+---
+
