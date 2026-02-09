@@ -64,3 +64,12 @@ Tradeoff: seems **slower than HiGHS** on a lot of modern benchmarks, but looks m
 
 ---
 
+## Why not GLPK?
+
+GLPK kept appearing in searches, but the **GPL** licensing is the main blocker for this project.
+
+volesti is LGPL-3.0, and pulling in a GPL solver can create license headaches (especially depending on how it’s linked/distributed). So even if GLPK works technically, it’s not the safest choice for keeping the licensing clean.
+
+*(If mentors want a precise licensing interpretation, I’ll treat this as “needs confirmation” and won’t assume anything silently.)*
+
+---
