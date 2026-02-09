@@ -73,3 +73,46 @@ volesti is LGPL-3.0, and pulling in a GPL solver can create license headaches (e
 *(If mentors want a precise licensing interpretation, I’ll treat this as “needs confirmation” and won’t assume anything silently.)*
 
 ---
+
+
+## Quick comparison (my current view)
+
+| Solver | Speed | Reliability | License | Verdict |
+|--------|-------|-------------|---------|---------|
+| HiGHS | Very fast | Good (may need tuning) | MIT | Best default pick |
+| Clp | Fast | Very good | EPL | Solid fallback |
+| GLPK | Medium | OK | GPL | License risk |
+| LpSolve | — | Unreliable in high-dim cases | LGPL | What we’re replacing |
+
+---
+
+## Research process (what I actually did)
+
+This wasn’t just “read one blog and decide” — I tried to cross-check most claims:
+
+- Skimmed the official GitHub repos (activity, docs, issues)
+- Checked SciPy docs / release notes around the switch to HiGHS
+- Looked at a couple solver benchmark writeups (not perfect, but enough signal)
+- Verified CRAN availability and basic install story for R
+
+---
+
+## Recommendation for the project
+
+Start with **HiGHS** as the primary solver, and keep **Clp** as an optional fallback.
+
+Why this combo works well for volesti/Rvolesti:
+
+1. Performance: HiGHS is usually the fastest open-source option
+2. Reliability: Clp gives a “known stable” backup path
+3. Licensing: both are permissive enough to avoid GPL headaches
+4. Ecosystem: workable story for both **C++ core** and **R interface**
+
+---
+
+## Next steps
+
+Hard test is next: implement the inner ball LP formulation (current plan mentions `nloptr`, but since that’s excluded above, I’ll treat that as “hard test requirement” rather than a solver recommendation).
+
+---
+
