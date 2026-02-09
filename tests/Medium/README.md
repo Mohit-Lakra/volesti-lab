@@ -116,3 +116,42 @@ Hard test is next: implement the inner ball LP formulation (current plan mention
 
 ---
 
+# Quick Solver Comparison
+
+## Top picks
+
+1. **HiGHS** — fast, MIT, active
+2. **Clp** — stable, mature, good fallback
+
+## Feature checklist
+
+| Feature | HiGHS | Clp | GLPK | LpSolve |
+|--------|-------|-----|------|--------|
+| Speed | ⚡⚡⚡ | ⚡⚡ | ⚡ | 💀 |
+| Reliability | Good* | Excellent | OK | Bad |
+| License | MIT ✓ | EPL ✓ | GPL ✗ | LGPL |
+| High-dim support | ✓✓ | ✓✓ | ✓ | ✗ |
+| Active dev | ✓✓✓ | ✓ | Slow | Dead |
+| R support | `highs` | via ROI | yes | yes |
+
+\* HiGHS usually benefits from presolve/scaling (especially on harder instances).
+
+---
+
+## Benchmarks (notes-to-self)
+
+I saw at least one “robustness style” benchmark on a set of hard LPs where Clp solved more out-of-the-box, and HiGHS needed option tweaks to behave well.  
+I’m not treating those numbers as absolute truth — they’re just a reminder that defaults matter.
+
+---
+
+## Installation notes
+
+```r
+# R packages
+install.packages("highs")
+
+# For Clp access in R (via ROI ecosystem)
+install.packages("ROI")
+# (and potentially ROI.plugin.clp depending on setup)
+```
