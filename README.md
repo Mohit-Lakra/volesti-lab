@@ -1,28 +1,41 @@
-# volesti-lab
+# GSoC 2026 Test Solutions - Exclude LpSolve Project
 
-Prep repo for the GeomScale GSoC 2026 idea “Exclude lp_solve from volesti”. Everything here is work-in-progress notes, logs, and tests that show I can build the stack and understand where the pain points are.
+**Applicant:** Mohit Lakra  
+**Organization:** GeomScale  
+**Project:** Replace LpSolve in volesti  
 
-## Current Focus
-- ✅ Day 1 (Easy Test groundwork): built C++ + R interfaces, captured max-ball outputs.
-- 🔄 Day 2+: start solver research for the Medium Test.
+## What's This?
 
-## Day 1 Snapshot
-- **C++ side:** `cmake .. && make -j4` inside `volesti/test`; kept 24 targets by commenting out the four CRHMC executables that choke on Clang 20. `./test_internal_points` now runs end-to-end (5/6 doctests pass, sparse order polytope fails only because tolerance is 1e-6 vs the achieved 1.0e-4).
-- **R side:** `Rscript -e 'Rcpp::compileAttributes()'` followed by `R_MAKEVARS_USER=/dev/null R CMD INSTALL --preclean --no-multiarch --with-keep.source .`. This needed two local patches so the bundled `qd` code stops injecting `-march=native`/`<immintrin.h>` when the compiler is targeting arm64.
-- **Verification:** Stored the doctest log, an `inner_ball()` script, and console output for cube/simplex/cross polytopes under `tests/easy/` so mentors can replay the Easy Test quickly.
+This repo contains my solutions for the GSoC 2026 qualification tests. I'm applying to work on replacing the LpSolve library in volesti with something more reliable for high-dimensional polytopes.
 
-## Key Fixes
-1. `src/external/PackedCSparse/qd/Makefile` – drop `-march=native`, compile `.cc` sources with `$(CXX)` to inherit the right standard/arch from R.
-2. `src/external/PackedCSparse/FloatArray.h` – guard `<immintrin.h>` behind `#if defined(__AVX2__)` so ARM builds no longer drag in x86-only headers.
-3. Force-clean both embedded libraries plus `R CMD INSTALL --preclean` after switching architectures; otherwise stale x86 objects poison the final shared object.
+## Current Status
 
-## Logs & Proof
-- `logs/day1-build.md` – raw build diary (C++ focus).
-- `logs/day1-summary.md` – condensed checklist + commands.
-- `tests/easy/easy-test.md` – Easy Test recipe with links to [`cpp_output.txt`](tests/easy/cpp_output.txt) and [`r_output.txt`](tests/easy/r_output.txt).
+- ✅ **Easy Test** - Done (Feb 9)
+- ✅ **Medium Test** - Done (Feb 9)  
+- 🔄 **Hard Test** - Starting Feb 10
 
-## Next Steps
-- Medium Test: catalog LP/ball solvers (CRAN + modern C++), sketch replacement plan.
-- Hard Test: prototype a replacement (likely nloptr + Eigen glue) once the research doc is ready.
+## Quick Links
 
-*Last updated: 7 Feb 2026*
+- [Easy Test Results](tests/easy/)
+- [Medium Test Research](tests/medium/)
+- [Hard Test (TBD)](tests/hard/)
+- [My Timeline](timeline.md)
+
+## Main Findings So Far
+
+After researching alternative LP solvers, I think **HiGHS** is the way to go for volesti:
+- It's MIT licensed (no GPL issues like GLPK)
+- Way faster than the current LpSolve
+- Already used in SciPy as their default
+- Has both C++ and R interfaces which is perfect
+
+**Clp** would be a good backup since it's super reliable even if a bit slower.
+
+## Test Environment
+
+- **OS:**  MacOS
+- **R Version:** 4.5.2
+- **volesti:** Built from source (develop branch)
+- **Rvolesti:** Latest from CRAN
+
+Last updated: Feb 9, 2026
